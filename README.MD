@@ -4,14 +4,10 @@ csvとCOCOに対応
 
 ## install
 `
-pip install numpy opencv-python cython
-
-git clone https://github.com/cocodataset/cocoapi.git
-
-cd cocoapi/PythonAPI
-
-make
-
+pip install numpy opencv-python cython  
+git clone https://github.com/cocodataset/cocoapi.git  
+cd cocoapi/PythonAPI  
+make  
 make install
 `
 
