@@ -173,4 +173,4 @@ dmypy.json
 
 
 .vscode/settings.json
-./cocoapi
+cocoapi/
