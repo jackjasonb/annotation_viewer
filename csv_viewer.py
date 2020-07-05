@@ -7,17 +7,6 @@ import numpy as np
 import cv2
 
 
-def arg_parser():
-    """ Parse the arguments.
-    """
-    parser = argparse.ArgumentParser(description='annotation tool')
-    parser.add_argument('anno_file', help='annotation file')
-    parser.add_argument('-s', '--save-image',
-                        help='save image annotation path',
-                        default='./annotation_image')
-    return parser.parse_args()
-
-
 def csv_to_list(path, head=False):
     list = []
     with open(path, 'r') as f:
@@ -104,10 +93,42 @@ def gui(image_list, annotations):
     return True
 
 
+def save_annotation_image(image_list, annotations, dir_path):
+    os.makedirs(dir_path, exist_ok=True)
+    for image_path in image_list:
+        image = cv2.imread(image_path)
+        annotation = annotations[image_path]
+        if len(annotation) > 0:
+            for anno in annotation:
+                box = (anno['x1'], anno['y1'], anno['x2'], anno['y2'])
+                draw_annotation(image, box, caption=anno['class'])
+        print(make_save_image_path(dir_path, image_path))
+        cv2.imwrite(make_save_image_path(dir_path, image_path), image)
+
+
+def make_save_image_path(dir_path, image_path):
+    image_name = os.path.basename(image_path)
+    base, ext = os.path.splitext(image_name)
+    new_image_name = base + '_anno' + ext
+    return os.path.join(dir_path, new_image_name)
+
+
+def arg_parser():
+    """ Parse the arguments.
+    """
+    parser = argparse.ArgumentParser(description='annotation tool')
+    parser.add_argument('anno_file', help='annotation file')
+    parser.add_argument('-s', '--save',
+                        help='save image annotation path',
+                        default=False)
+    return parser.parse_args()
+
+
 def main():
     args = arg_parser()
-
+    pwd = os.getcwd()
     csv_list = csv_to_list(args.anno_file)
+
     os.chdir(os.path.dirname(args.anno_file))
     annotations, image_list = get_annotation_list(csv_list)
 
@@ -115,6 +136,9 @@ def main():
           'Image num    : {}'
           .format(len(csv_list), len(image_list)))
 
+    if args.save:
+        save_dir = os.path.join(pwd, args.save)
+        save_annotation_image(image_list, annotations, save_dir)
     gui(image_list, annotations)
 
 
