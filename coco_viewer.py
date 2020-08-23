@@ -2,10 +2,9 @@ import argparse
 import collections
 import os
 
-import numpy as np
-import cv2
-
 from pycocotools.coco import COCO
+
+from utils import gui,  save_annotation_image
 
 
 def get_annotation_list(coco_dir):
@@ -49,78 +48,11 @@ def get_annotation_list(coco_dir):
     return annotations, image_list
 
 
-def draw_annotation(image, box, caption="", thickness=2, color=(0, 255, 0)):
-    """
-    box : (x1, y1, x2, y2)
-    """
-    box = np.array(box).astype(int)
-    cv2.rectangle(image, (box[0], box[1]), (box[2], box[3]),
-                  color, thickness, cv2.LINE_AA)  # LINE_AA=アンチエイリアス
-    cv2.putText(image, caption, (box[0], box[1] - 10),
-                cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 0), thickness)
-    cv2.putText(image, caption, (box[0], box[1] - 10),
-                cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), thickness-1)
-
-
-def gui(image_list, annotations):
-    i = 0
-    leftkeys = (81, 110, 65361, 2424832)
-    rightkeys = (83, 109, 65363, 2555904)
-    while True:
-        image_path = image_list[i]
-        image = cv2.imread(image_path)
-        annotation = annotations[image_path]
-        if len(annotation) > 0:
-            for anno in annotation:
-                box = (anno['x1'], anno['y1'], anno['x2'], anno['y2'])
-                draw_annotation(image, box, caption=anno['class'])
-
-        cv2.namedWindow(image_path, cv2.WINDOW_NORMAL)
-        cv2.imshow(image_path, image)
-
-        print(
-            "{}  ({}/{})\n"
-            "annotation_num  ({})"
-            .format(os.path.basename(image_path),
-                    i + 1,
-                    len(image_list),
-                    len(annotation))
-        )
-
-        key = cv2.waitKeyEx()
-
-        if key in rightkeys:
-            i += 1
-            if i >= len(image_list):
-                i = 0
-        if key in leftkeys:
-            i -= 1
-            if i < 0:
-                i = len(image_list) - 1
-        if (key == ord('q')) or (key == 27):
-            return False
-
-    return True
-
-
-def save_annotation_image(image_list, annotations, dir_path):
-    os.makedirs(dir_path, exist_ok=True)
-    for image_path in image_list:
-        image = cv2.imread(image_path)
-        annotation = annotations[image_path]
-        if len(annotation) > 0:
-            for anno in annotation:
-                box = (anno['x1'], anno['y1'], anno['x2'], anno['y2'])
-                draw_annotation(image, box, caption=anno['class'])
-        print(make_save_image_path(dir_path, image_path))
-        cv2.imwrite(make_save_image_path(dir_path, image_path), image)
-
-
-def make_save_image_path(dir_path, image_path):
-    image_name = os.path.basename(image_path)
-    base, ext = os.path.splitext(image_name)
-    new_image_name = base + '_anno' + ext
-    return os.path.join(dir_path, new_image_name)
+def count_anno_num(annotations):
+    count = 0
+    for anno in annotations.values():
+        count += len(anno)
+    return count
 
 
 def arg_parser():
@@ -132,13 +64,6 @@ def arg_parser():
                         help='save image annotation path',
                         default=False)
     return parser.parse_args()
-
-
-def count_anno_num(annotations):
-    count = 0
-    for anno in annotations.values():
-        count += len(anno)
-    return count
 
 
 def main():
