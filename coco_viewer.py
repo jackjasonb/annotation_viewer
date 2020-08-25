@@ -7,7 +7,7 @@ from pycocotools.coco import COCO
 from utils import gui,  save_annotation_image
 
 
-def get_annotation_list(coco_dir):
+def get_annotation_list(image_dir, anno_file):
     '''
     return : annotations = dict[image_path][n],
              image_list = annotations.keys()
@@ -15,7 +15,7 @@ def get_annotation_list(coco_dir):
     image_list = []
     annotations = collections.OrderedDict()
 
-    coco = COCO(os.path.join(coco_dir, 'annotations', 'annotations.json'))
+    coco = COCO(anno_file)
     image_ids = coco.getImgIds()
     for id in image_ids:
         annotation_ids = coco.getAnnIds(imgIds=id)
@@ -24,7 +24,7 @@ def get_annotation_list(coco_dir):
             continue
 
         image_info = coco.loadImgs(id)[0]
-        image_path = os.path.join(coco_dir, 'images', image_info['file_name'])
+        image_path = os.path.join(image_dir, image_info['file_name'])
         image_list.append(image_path)
 
         coco_annotations = coco.loadAnns(annotation_ids)
@@ -59,7 +59,8 @@ def arg_parser():
     """ Parse the arguments.
     """
     parser = argparse.ArgumentParser(description='annotation tool')
-    parser.add_argument('coco', help='coco dir')
+    parser.add_argument('-i', '--image', help='image dir')
+    parser.add_argument('-a', '--anno', help='anno file')
     parser.add_argument('-s', '--save',
                         help='save image annotation path',
                         default=False)
@@ -70,7 +71,7 @@ def main():
     args = arg_parser()
     pwd = os.getcwd()
 
-    annotations, image_list = get_annotation_list(args.coco)
+    annotations, image_list = get_annotation_list(args.image, args.anno)
 
     print('All anno num : {}\n'
           'Image num    : {}'

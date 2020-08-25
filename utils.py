@@ -1,6 +1,18 @@
 import os
 import cv2
 import numpy as np
+import csv
+
+
+def csv_to_list(path, head=False):
+    list = []
+    with open(path, 'r') as f:
+        reader = csv.reader(f)
+        if head:
+            next(reader)
+        for row in reader:
+            list.append(row)
+    return list
 
 
 def draw_annotation(image, box, caption="", thickness=2, color=(0, 255, 0)):

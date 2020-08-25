@@ -1,21 +1,9 @@
 import argparse
 import collections
-import csv
 import os
 
 
-from utils import gui, save_annotation_image
-
-
-def csv_to_list(path, head=False):
-    list = []
-    with open(path, 'r') as f:
-        reader = csv.reader(f)
-        if head:
-            next(reader)
-        for row in reader:
-            list.append(row)
-    return list
+from utils import gui, save_annotation_image, csv_to_list
 
 
 def get_annotation_list(csv_list):
@@ -43,7 +31,7 @@ def arg_parser():
     """ Parse the arguments.
     """
     parser = argparse.ArgumentParser(description='annotation tool')
-    parser.add_argument('anno_file', help='annotation file')
+    parser.add_argument('-a', '--anno_file', help='annotation file')
     parser.add_argument('-s', '--save',
                         help='save image annotation path',
                         default=False)
