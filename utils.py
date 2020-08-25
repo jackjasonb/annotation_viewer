@@ -32,6 +32,9 @@ def gui(image_list, annotations):
     i = 0
     leftkeys = (81, 110, 65361, 2424832)
     rightkeys = (83, 109, 65363, 2555904)
+
+    print('IMAGE NUM:{} / ANNO NUM:{}'.format(len(image_list, annotations)))
+
     while True:
         image_path = image_list[i]
         image = cv2.imread(image_path)

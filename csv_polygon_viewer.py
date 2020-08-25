@@ -80,6 +80,7 @@ def main():
     img_list = [os.path.join(args.image, i[0]) for i in csv_list]
     annotation_list = get_annotation_list(csv_list, img_list)
     img_list = list(set(img_list))
+    print('IMAGE NUM:{} / ANNO NUM:{}'.format(len(img_list), len(csv_list)))
     gui(img_list, annotation_list)
 
 
