@@ -3,7 +3,7 @@ import collections
 import os
 
 
-from utils import gui, save_annotation_image, csv_to_list
+from utils import gui, csv_to_list, save_annotation_image_square
 
 
 def get_annotation_list(csv_list):
@@ -41,6 +41,7 @@ def arg_parser():
 def main():
     args = arg_parser()
     pwd = os.getcwd()
+
     csv_list = csv_to_list(args.anno_file)
 
     os.chdir(os.path.dirname(args.anno_file))
@@ -52,7 +53,7 @@ def main():
 
     if args.save:
         save_dir = os.path.join(pwd, args.save)
-        save_annotation_image(image_list, annotations, save_dir)
+        save_annotation_image_square(image_list, annotations, save_dir)
     gui(image_list, annotations)
 
 

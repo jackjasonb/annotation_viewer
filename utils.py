@@ -69,13 +69,16 @@ def gui(image_list, annotations):
 
 
 def make_save_image_path(dir_path, image_path):
+    '''
+    return: (dir_path)/(image_name)_anno.{png,jpg}
+    '''
     image_name = os.path.basename(image_path)
     base, ext = os.path.splitext(image_name)
     new_image_name = base + '_anno' + ext
     return os.path.join(dir_path, new_image_name)
 
 
-def save_annotation_image(image_list, annotations, dir_path):
+def save_annotation_image_square(image_list, annotations, dir_path):
     os.makedirs(dir_path, exist_ok=True)
     for image_path in image_list:
         image = cv2.imread(image_path)
@@ -84,5 +87,34 @@ def save_annotation_image(image_list, annotations, dir_path):
             for anno in annotation:
                 box = (anno['x1'], anno['y1'], anno['x2'], anno['y2'])
                 draw_annotation(image, box, caption=anno['class'])
-        print(make_save_image_path(dir_path, image_path))
-        cv2.imwrite(make_save_image_path(dir_path, image_path), image)
+            dst_path = make_save_image_path(dir_path, image_path)
+            print(dst_path)
+            cv2.imwrite(dst_path, image)
+
+
+def save_annotation_image_polygon(image_list, annotations, dir_path):
+    os.makedirs(dir_path, exist_ok=True)
+
+    for image_path in image_list:
+        image = cv2.imread(image_path)
+        mask = image.copy()
+        annotation = annotations[image_path]
+
+        if len(annotation) > 0:
+            for anno in annotation:
+                # make polygon=[[x1,y1], ...]
+                polygon = []
+                for i in range(0, len(anno)-2, 2):
+                    polygon.append(
+                        [[float(anno[i]), float(anno[i+1])]])
+                polygon = np.array(polygon, 'int32')
+
+                # mask
+                cv2.fillConvexPoly(mask, points=polygon, color=(0, 0, 255))
+
+            # marge mask
+            image = cv2.addWeighted(mask, 0.3, image, 0.7, 0)
+            # save image
+            dst_path = make_save_image_path(dir_path, image_path)
+            print(dst_path)
+            cv2.imwrite(dst_path, image)

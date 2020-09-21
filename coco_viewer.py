@@ -4,7 +4,7 @@ import os
 
 from pycocotools.coco import COCO
 
-from utils import gui,  save_annotation_image
+from utils import gui,  save_annotation_image_square
 
 
 def get_annotation_list(image_dir, anno_file):
@@ -79,7 +79,7 @@ def main():
 
     if args.save:
         save_dir = os.path.join(pwd, args.save)
-        save_annotation_image(image_list, annotations, save_dir)
+        save_annotation_image_square(image_list, annotations, save_dir)
     gui(image_list, annotations)
 
 
