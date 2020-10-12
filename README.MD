@@ -3,11 +3,10 @@ OpenCVベースの物体検出データセットのアノテーションを確�
 csvとCOCO formatに対応
 
 ## Install
-`pip install -r requirements.txt`  
-`git clone https://github.com/cocodataset/cocoapi.git`  
-`cd cocoapi/PythonAPI`  
-`make`  
-`make install`
+```shell
+pip install -r requirements.txt
+git clone https://github.com/cocodataset/cocoapi.git
+```
 
 ## Usage
 ### Bounding Box
