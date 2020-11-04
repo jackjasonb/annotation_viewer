@@ -42,7 +42,7 @@ def gui(image_list, annotations):
                 box = (anno['x1'], anno['y1'], anno['x2'], anno['y2'])
                 draw_annotation(image, box, caption=anno['class'])
 
-        cv2.namedWindow('Image', cv2.WINDOW_NORMAL)
+        cv2.namedWindow('Image', cv2.WINDOW_GUI_EXPANDED | cv2.WINDOW_NORMAL)
         cv2.imshow('Image', image)
 
         print(

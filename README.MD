@@ -7,6 +7,7 @@ csvとCOCO formatに対応
 pip install -r requirements.txt
 git clone https://github.com/cocodataset/cocoapi.git
 ```
+This code uses OpenCV Qt expanded. Please install qt library.
 
 ## Usage
 ### Bounding Box
