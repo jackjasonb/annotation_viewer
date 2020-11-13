@@ -33,6 +33,8 @@ def gui(image_list, annotations):
     leftkeys = (81, 110, 65361, 2424832)
     rightkeys = (83, 109, 65363, 2555904)
 
+    cv2.namedWindow('Image', cv2.WINDOW_GUI_EXPANDED | cv2.WINDOW_NORMAL)
+
     while True:
         image_path = image_list[i]
         image = cv2.imread(image_path)
@@ -42,7 +44,6 @@ def gui(image_list, annotations):
                 box = (anno['x1'], anno['y1'], anno['x2'], anno['y2'])
                 draw_annotation(image, box, caption=anno['class'])
 
-        cv2.namedWindow('Image', cv2.WINDOW_GUI_EXPANDED | cv2.WINDOW_NORMAL)
         cv2.imshow('Image', image)
 
         print(
